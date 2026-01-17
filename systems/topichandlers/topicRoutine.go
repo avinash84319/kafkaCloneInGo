@@ -2,14 +2,12 @@ package topichandlers
 
 import (
 	"fmt"
-	"sync"
 
 	"github.com/avinash84319/kafkaCloneInGo/models/insertgateway"
 	"github.com/avinash84319/kafkaCloneInGo/models/topicmodels"
 )
 
 func InitializeTopicHandler(topicName string, topicMessageChannel *chan insertgateway.Request) error{
-	var TopicMutex sync.Mutex
 	var MessageQueue []insertgateway.Request
 
 	// initialize the partitions in memory store for this topic
@@ -20,10 +18,8 @@ func InitializeTopicHandler(topicName string, topicMessageChannel *chan insertga
 		for {
 			var message insertgateway.Request = <-*topicMessageChannel
 			fmt.Println("Received message for topic: ", topicName, " Message: ", message)
-			TopicMutex.Lock()
 			// add the message to the message queue
 			MessageQueue = append(MessageQueue, message)
-			TopicMutex.Unlock()
 		}
 	}()
 
